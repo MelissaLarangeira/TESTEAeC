@@ -1,5 +1,8 @@
-﻿namespace AecApi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AecApi.Models
 {
+    [Table("Enderecos")]
     public class Adress
     {
         public string Id { get; set; }

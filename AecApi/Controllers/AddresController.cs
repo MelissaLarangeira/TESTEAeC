@@ -3,6 +3,7 @@ using AecApi.Service;
 using Microsoft.AspNetCore.Mvc;
 using AecApi.Services.Helper;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.Identity.Client;
 
 namespace AecApi.Controllers
 {
@@ -41,6 +42,28 @@ namespace AecApi.Controllers
             }
 
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUsuarioPorID(int id)
+        {
+            return null;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult>AdcionarUsuario([FromBody] Adress endereco)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _service.AdcionarUsuarioEndereco(endereco);
+
+            return CreatedAtAction(nameof(GetUsuarioPorID), new { id = endereco.usuario.Id }, endereco);
+        }
+
+
+        
 
     }
 }
