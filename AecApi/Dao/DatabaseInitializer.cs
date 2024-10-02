@@ -15,11 +15,12 @@ public class DatabaseInitializer
         using (var connection = new SqlConnection(connectionString))
         {
             connection.Open();
-            var script = File.ReadAllText("Data/create_tables.sql");
-            using (var command = new SqlCommand(script, connection))
-            {
-                command.ExecuteNonQuery();
-            }
+            //var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Dao", "Create_Table.sql");
+            //var script = File.ReadAllText(scriptPath);
+            //using (var command = new SqlCommand(script, connection))
+            //{
+            //    command.ExecuteNonQuery();
+            //}
         }
     }
 }

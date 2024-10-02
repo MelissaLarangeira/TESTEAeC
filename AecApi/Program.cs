@@ -9,6 +9,8 @@ namespace AecApi
 
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddSwaggerGen();
+
             // Configuração dos serviços
             builder.Services.AddControllers();
 
@@ -25,6 +27,10 @@ namespace AecApi
             }
             // Configura o roteamento e os endpoints
             app.MapControllers();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI();
 
             app.Run();
 

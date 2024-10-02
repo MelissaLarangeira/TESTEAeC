@@ -1,3 +1,5 @@
+Create database EnderecosDb
+
 CREATE TABLE Usuarios (
     Id INT PRIMARY KEY IDENTITY,
     Nome NVARCHAR(100),
