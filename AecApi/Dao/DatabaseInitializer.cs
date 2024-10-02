@@ -1,26 +1,63 @@
 ﻿using Microsoft.Data.SqlClient;
 
-public class DatabaseInitializer
-{
-    private readonly IConfiguration _configuration;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Data.Entity;
 
-    public DatabaseInitializer(IConfiguration configuration)
+namespace AecApi.Dao
+{
+    public class DatabaseInitializer
     {
-        _configuration = configuration;
+        private readonly MyDbContext _context; // Contexto do Entity Framework
+        private readonly IConfiguration _configuration;
+
+        public DatabaseInitializer(MyDbContext context, IConfiguration configuration)
+        {
+            _context = context;
+            _configuration = configuration;
+        }
+
+        public async Task InitializeAsync()
+        {
+            // Verifica se o banco de dados já está criado
+            await _context.Database.EnsureCreatedAsync();
+
+            var scriptName = "Create_Table.sql"; // Nome do script
+            var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Dao", scriptName);
+
+            // Verifica se o script já foi executado
+            var alreadyExecuted = await _context.SchemaMigrations
+                .AnyAsync(m => m.ScriptName == scriptName);
+
+            if (!alreadyExecuted)
+            {
+                // Lê o conteúdo do script
+                var script = await File.ReadAllTextAsync(scriptPath);
+
+                // Executa o script
+                await _context.Database.ExecuteSqlRawAsync(script);
+
+                // Registra a execução do script
+                var migrationRecord = new SchemaMigration
+                {
+                    ScriptName = scriptName,
+                    ExecutedAt = DateTime.UtcNow
+                };
+
+                _context.SchemaMigrations.Add(migrationRecord);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 
-    public void Initialize()
+    // Classe que representa a tabela SchemaMigrations
+    public class SchemaMigration
     {
-        var connectionString = _configuration.GetConnectionString("DefaultConnection");
-        using (var connection = new SqlConnection(connectionString))
-        {
-            connection.Open();
-            //var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Dao", "Create_Table.sql");
-            //var script = File.ReadAllText(scriptPath);
-            //using (var command = new SqlCommand(script, connection))
-            //{
-            //    command.ExecuteNonQuery();
-            //}
-        }
+        public string ScriptName { get; set; }
+        public DateTime ExecutedAt { get; set; }
     }
 }
