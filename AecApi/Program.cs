@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 
 namespace AecApi
 {
@@ -5,32 +6,29 @@ namespace AecApi
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            // Configuração dos serviços
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            // Adiciona a classe responsável por inicializar o banco de dados
+            builder.Services.AddTransient<DatabaseInitializer>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            // Inicializa o banco de dados ao iniciar a aplicação
+            using (var scope = app.Services.CreateScope())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
+                initializer.Initialize();
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
+            // Configura o roteamento e os endpoints
             app.MapControllers();
 
             app.Run();
+
         }
+       
     }
 }
