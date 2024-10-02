@@ -11,21 +11,21 @@ namespace AecApi.Controllers
     [ApiController]
     public class AddresController : ControllerBase
     {
-     
+
         private readonly IAddresService _service;
 
-        private readonly IViaCepService _viacepservice;  
+        private readonly IViaCepService _viacepservice;
 
 
         public AddresController(IAddresService service, IViaCepService viacep)
         {
             _service = service;
 
-            _viacepservice = viacep;    
+            _viacepservice = viacep;
         }
-             
+
         [HttpGet("{CEP}")]
-        public async Task<ActionResult<IEnumerable<ViaCepModel>>> getAddres( string CEP)
+        public async Task<ActionResult<IEnumerable<ViaCepModel>>> getAddres(string CEP)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace AecApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult>AdcionarUsuario([FromBody] Adress endereco)
+        public async Task<IActionResult> AdcionarUsuario([FromBody] Adress endereco)
         {
             if (!ModelState.IsValid)
             {
@@ -62,8 +62,33 @@ namespace AecApi.Controllers
             return CreatedAtAction(nameof(GetUsuarioPorID), new { id = endereco.usuario.Id }, endereco);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AtualizaEndereco(int id, [FromBody] Adress endereco)
+        {
 
-        
+            var Update = await _service.AtualizaUsuarioEndereco(id, endereco);
+
+            if (!Update)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return NoContent();
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> ExcluirUsuario( int id)
+        {
+            var delete = await _service.ExcluiUsuario(id);
+
+            if (!delete)
+            {
+                return NotFound("Usuario não existe ou ja foi excluido");
+            }
+
+            return Ok("Excluido com sucesso");
+        }
 
     }
 }

@@ -14,9 +14,19 @@ namespace AecApi.Services
 
         }
 
-        public Task AdcionarUsuarioEndereco([FromBody] Adress endereco)
+        public async Task AdcionarUsuarioEndereco([FromBody] Adress endereco)
         {
-            throw new NotImplementedException();
+          await  _service.AdcionarUsuarioEndereco(endereco);
+        }
+
+        public Task<bool> AtualizaUsuarioEndereco(int id, Adress endereco)
+        {
+            return _service.AtualizaUsuarioEndereco(id, endereco);
+        }
+
+        public async Task<bool> ExcluiUsuario(int id)
+        {
+            return await _service.ExcluiUsuario(id);
         }
 
         public async Task<Usuario?> GetUsuarioPorID(int id)
