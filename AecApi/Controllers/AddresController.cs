@@ -43,14 +43,22 @@ namespace AecApi.Controllers
 
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("usuario/{id}")]
         public async Task<IActionResult> GetUsuarioPorID(int id)
         {
-            return null;
+           Usuarios? usuario = await _service.GetUsuarioPorID(id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+
+            return Ok(usuario);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AdcionarUsuario([FromBody] Adress endereco)
+        [HttpPost("adicionar-Endereco")]
+        public async Task<IActionResult> AdcionarEnderecoUsuario([FromBody] Adress endereco)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +67,20 @@ namespace AecApi.Controllers
 
             await _service.AdcionarUsuarioEndereco(endereco);
 
-            return CreatedAtAction(nameof(GetUsuarioPorID), new { id = endereco.usuario.Id }, endereco);
+            return CreatedAtAction(nameof(GetUsuarioPorID), new { id = endereco.UsuarioID }, endereco);
+        }
+
+        [HttpPost("adicionar-Usuario")]
+        public async Task<IActionResult> AdcionarUsuario([FromBody] Usuarios usuarios)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _service.AdcionarUsuario(usuarios);
+
+            return CreatedAtAction(nameof(GetUsuarioPorID), new { id = usuarios.Id }, usuarios);
         }
 
         [HttpPut("{id}")]

@@ -1,10 +1,23 @@
-﻿namespace AecApi.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace AecApi.Models
 {
-    public class Usuario
+    public class Usuarios
     {
-        public int Id { get; set; } 
-        public string nome { get; set; }    
-        public string usuario { get; set; } 
-        public string senha { get; set;}
+        [JsonIgnore]
+        public int? Id { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string? Nome { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string? Usuario { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string? Senha { get; set;}
     }
 }

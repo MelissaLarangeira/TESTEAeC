@@ -1,44 +1,16 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using AecApi.Dao;
+using AecApi.Service;
+using AecApi.Services;
+using AecApi.Services.Helper;
+using System;
+
 
 namespace AecApi
 {
     public class Program
     {
-        #region antigo main
-        //public static void Main(string[] args)
-        //{
-
-        //    var builder = WebApplication.CreateBuilder(args);
-
-        //    builder.Services.AddSwaggerGen();
-
-        //    // Configuração dos serviços
-        //    builder.Services.AddControllers();
-
-        //    // Adiciona a classe responsável por inicializar o banco de dados
-        //    builder.Services.AddTransient<DatabaseInitializer>();
-
-        //    var app = builder.Build();
-
-        //    // Inicializa o banco de dados ao iniciar a aplicação
-        //    using (var scope = app.Services.CreateScope())
-        //    {
-        //        var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
-        //        initializer.Initialize();
-        //    }
-        //    // Configura o roteamento e os endpoints
-        //    app.MapControllers();
-
-        //    app.UseSwagger();
-
-        //    app.UseSwaggerUI();
-
-        //    app.Run();
-
-        //}
-        #endregion
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -47,12 +19,30 @@ namespace AecApi
             builder.Services.AddDbContext<MyDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddScoped<IAddresService, AddresService>();
+            builder.Services.AddScoped<IViaCepService, ViaCepService>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("teste",
+                                  policy =>
+                                  {
+                                      policy
+                                      .WithOrigins("*")
+                                      .AllowAnyMethod()
+                                      .SetIsOriginAllowed(_ => true)
+                                      .AllowAnyHeader()
+                                      .Build();
+                                  });
+            });
+
             // Configuração dos serviços
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
 
             // Adiciona a classe responsável por inicializar o banco de dados
             builder.Services.AddTransient<DatabaseInitializer>();
+            //builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("db_jpv")));
+
 
             var app = builder.Build();
 
@@ -82,8 +72,6 @@ namespace AecApi
 
             await app.RunAsync();
         }
-
-
 
     }
 }

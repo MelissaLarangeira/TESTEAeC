@@ -5,9 +5,11 @@ namespace AecApi.Service
 {
     public interface IAddresService
     {
-        public Task<Usuario?> GetUsuarioPorID(int id);
+        public Task<Usuarios?> GetUsuarioPorID(int id);
 
         public Task AdcionarUsuarioEndereco([FromBody] Adress endereco);
+
+        public Task AdcionarUsuario([FromBody] Usuarios usuarios);
 
         public Task<bool> AtualizaUsuarioEndereco(int id, Adress endereco);
 

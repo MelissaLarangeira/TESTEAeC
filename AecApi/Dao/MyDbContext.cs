@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AecApi.Models;
+using AecApi.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace AecApi.Dao
 {
     public class MyDbContext : DbContext
     {
-        public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
+        public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }             
 
-        // Defina suas entidades (tabelas) aqui
-        public DbSet<SchemaMigration> SchemaMigrations { get; set; }
+        public DbSet<Usuarios> Usuarios { get; set; }
 
-        // Adicione outros DbSets conforme necessário para suas outras entidades
+        public DbSet<Adress> Enderecos { get; set; }    
     }
 }

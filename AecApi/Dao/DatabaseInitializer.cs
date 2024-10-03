@@ -1,11 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Data.Entity;
 
 namespace AecApi.Dao
@@ -29,35 +22,8 @@ namespace AecApi.Dao
             var scriptName = "Create_Table.sql"; // Nome do script
             var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Dao", scriptName);
 
-            // Verifica se o script já foi executado
-            var alreadyExecuted = await _context.SchemaMigrations
-                .AnyAsync(m => m.ScriptName == scriptName);
-
-            if (!alreadyExecuted)
-            {
-                // Lê o conteúdo do script
-                var script = await File.ReadAllTextAsync(scriptPath);
-
-                // Executa o script
-                await _context.Database.ExecuteSqlRawAsync(script);
-
-                // Registra a execução do script
-                var migrationRecord = new SchemaMigration
-                {
-                    ScriptName = scriptName,
-                    ExecutedAt = DateTime.UtcNow
-                };
-
-                _context.SchemaMigrations.Add(migrationRecord);
-                await _context.SaveChangesAsync();
-            }
+       
         }
     }
 
-    // Classe que representa a tabela SchemaMigrations
-    public class SchemaMigration
-    {
-        public string ScriptName { get; set; }
-        public DateTime ExecutedAt { get; set; }
-    }
 }
