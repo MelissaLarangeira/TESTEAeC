@@ -31,6 +31,7 @@ namespace AecApi.Services
             await _context.SaveChangesAsync();
         }
 
+   
         // Método para adicionar endereço e, opcionalmente, o usuário
         public async Task AdcionarUsuarioEndereco(Adress endereco)
         {

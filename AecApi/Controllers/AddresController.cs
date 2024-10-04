@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using AecApi.Services.Helper;
 using System.Runtime.ConstrainedExecution;
 using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Identity.Data;
+using AecApi.Services;
 
 namespace AecApi.Controllers
 {
@@ -16,12 +18,15 @@ namespace AecApi.Controllers
 
         private readonly IViaCepService _viacepservice;
 
+        private readonly IAuthService _Auth;
 
-        public AddresController(IAddresService service, IViaCepService viacep)
+        public AddresController(IAddresService service, IViaCepService viacep, IAuthService auth)
         {
             _service = service;
 
             _viacepservice = viacep;
+
+            _Auth = auth;
         }
 
         [HttpGet("{CEP}")]
@@ -95,6 +100,19 @@ namespace AecApi.Controllers
             }
 
             return NoContent();
+        }
+
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] Models.LoginRequest loginRequest)
+        {
+            // Autentica o usuário com os campos corretos
+            var user = _Auth.Authenticate(loginRequest.Usuario, loginRequest.Senha);
+
+            if (user == null)
+                return Unauthorized(new { message = "Credenciais inválidas" });
+
+            return Ok(new { message = "Login bem-sucedido", user });
         }
 
 

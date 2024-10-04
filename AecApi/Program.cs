@@ -21,6 +21,8 @@ namespace AecApi
 
             builder.Services.AddScoped<IAddresService, AddresService>();
             builder.Services.AddScoped<IViaCepService, ViaCepService>();
+            builder.Services.AddScoped<IAuthService, AuthSerive>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("teste",
