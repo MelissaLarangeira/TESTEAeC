@@ -58,7 +58,6 @@ namespace AecApi.Controllers
                 return NotFound();
             }
 
-
             return Ok(usuario);
         }
 
@@ -102,7 +101,6 @@ namespace AecApi.Controllers
             return NoContent();
         }
 
-
         [HttpPost("login")]
         public IActionResult Login([FromBody] Models.LoginRequest loginRequest)
         {
@@ -114,7 +112,6 @@ namespace AecApi.Controllers
 
             return Ok(new { message = "Login bem-sucedido", user });
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirUsuario( int id)

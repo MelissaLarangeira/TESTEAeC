@@ -5,6 +5,7 @@ using AecApi.Service;
 using AecApi.Services;
 using AecApi.Services.Helper;
 using System;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace AecApi
@@ -26,15 +27,10 @@ namespace AecApi
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("teste",
-                                  policy =>
-                                  {
-                                      policy
-                                      .WithOrigins("*")
-                                      .AllowAnyMethod()
-                                      .SetIsOriginAllowed(_ => true)
-                                      .AllowAnyHeader()
-                                      .Build();
-                                  });
+                    builder => builder
+                        .WithOrigins("http://localhost:3000") // Permite requisições desse endereço
+                        .AllowAnyMethod() // Permite todos os métodos (GET, POST, etc.)
+                        .AllowAnyHeader()); // Permite todos os cabeçalhos
             });
 
             // Configuração dos serviços
@@ -71,6 +67,8 @@ namespace AecApi
             // Configura Swagger
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            app.UseCors("teste");
 
             await app.RunAsync();
         }
