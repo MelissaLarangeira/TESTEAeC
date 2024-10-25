@@ -14,8 +14,7 @@ namespace AecApi.Services
 
         public Usuarios Authenticate(string usuario, string senha)
         {
-           return _context.Usuarios 
-                           .FirstOrDefault(u => u.Usuario == usuario && u.Senha == senha);
+           return _context.Usuarios.FirstOrDefault(u => u.Usuario == usuario && u.Senha == senha);
         }
     }
 }

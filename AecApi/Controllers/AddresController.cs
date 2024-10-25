@@ -61,6 +61,20 @@ namespace AecApi.Controllers
             return Ok(usuario);
         }
 
+        [HttpGet("Endereços/{id}")]
+        //public async Task<IActionResult> GetEndereçoPorID(int id)
+        //{
+        //    adre? usuario = await _service.GetEnderecoPorID(id);
+
+        //    if (usuario == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(usuario);
+        //}
+
+
         [HttpPost("adicionar-Endereco")]
         public async Task<IActionResult> AdcionarEnderecoUsuario([FromBody] Adress endereco)
         {
@@ -82,7 +96,23 @@ namespace AecApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _service.AdcionarUsuario(usuarios);
+            // Verificar se o usuário já existe
+            var usuarioExistente = await _service.ObterUsuarioPorEmail(usuarios.Usuario);
+
+            if (usuarioExistente != null)
+            {
+                return Conflict("Um usuário com este e-mail já existe.");
+            }
+
+            try
+            {
+                await _service.AdcionarUsuario(usuarios);
+            }
+            catch (Exception ex)
+            {
+                // Log do erro pode ser feito aqui
+                return StatusCode(500, $"Erro ao adicionar usuário: {ex.Message}");
+            }
 
             return CreatedAtAction(nameof(GetUsuarioPorID), new { id = usuarios.Id }, usuarios);
         }

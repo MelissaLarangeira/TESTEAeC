@@ -1,8 +1,14 @@
-﻿namespace AecApi.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AecApi.Models
 {
     public class LoginRequest
     {
-        public string Usuario { get; set; }
-        public string Senha { get; set; }
+        [Required]
+        [EmailAddress]
+        public string? Usuario { get; set; }
+
+        [Required]
+        public string? Senha { get; set; }
     }
 }

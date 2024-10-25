@@ -11,6 +11,7 @@ namespace AecApi.Dao
 
         public DbSet<Usuarios> Usuarios { get; set; }
 
-        public DbSet<Adress> Enderecos { get; set; }    
+        public DbSet<Adress> Enderecos { get; set; }
+
     }
 }

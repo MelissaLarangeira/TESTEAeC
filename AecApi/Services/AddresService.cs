@@ -4,6 +4,8 @@ using AecApi.Repositories;
 using AecApi.Service;
 using AecApi.Services.Helper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 
 namespace AecApi.Services
 {
@@ -15,22 +17,29 @@ namespace AecApi.Services
         {
             _context = context;
         }
+        public async Task<Usuarios> ObterUsuarioPorEmail(string email)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Usuario.Equals(email, StringComparison.OrdinalIgnoreCase));
+        }
 
         public async Task AdcionarUsuario([FromBody] Usuarios usuarios)
         {
-            // Adiciona o endereço ao contexto
-            _context.Add(usuarios);
+            // Verifica se o usuário já existe no banco de dados pelo e-mail ou outro campo único
+            var usuarioExistente = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Usuario == usuarios.Usuario); // Substitua "Email" pelo campo único desejado
 
-            // Se houver um usuário vinculado ao endereço, ele também será adicionado
-            if (usuarios != null)
+            if (usuarioExistente != null)
             {
-                _context.Usuarios.Add(usuarios);
+                // Retorna um erro ou mensagem indicando que o usuário já existe
+                throw new Exception("Usuário já cadastrado com este e-mail.");
             }
+
+            // Adiciona o usuário ao contexto, se não existir
+            _context.Usuarios.Add(usuarios);
 
             // Salva as mudanças no banco de dados
             await _context.SaveChangesAsync();
         }
-
    
         // Método para adicionar endereço e, opcionalmente, o usuário
         public async Task AdcionarUsuarioEndereco(Adress endereco)
